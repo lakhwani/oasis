@@ -26,6 +26,7 @@ contract DisasterCrowdfunding is ChainlinkClient {
 
     uint256 public pool;
     uint256 constant share = 50;
+
     mapping(string => address[]) walletByLocation;
 
     bytes32 private jobId;
@@ -63,50 +64,50 @@ contract DisasterCrowdfunding is ChainlinkClient {
         emit RequestPayoutCheck(requestId);
     }
 
-    // function fulfill(bytes32 _requestId, uint256 _result) public recordChainlinkFulfillment(_requestId) {
+    function fulfill(bytes32 requestId, bytes memory result) public recordChainlinkFulfillment(requestId) {
 
-    // // sample response:
-    // // {
-    // //     "message": "success",
-    // //     "result": [
-    // //         {
-    // //             "polygonlabel": "Global area",
-    // //             "geometry": {
-    // //                 "type": "Point",
-    // //                 "coordinates": [
-    // //                     -3.836608162668696,
-    // //                     40.212051450000004
-    // //                 ]
-    // //             },
-    // //             "event_type": "FL",
-    // //             "name": "Flood in Spain",
-    // //             "alert_level": "Green",
-    // //             "active": true,
-    // //             "country": "Spain",
-    // //             "start_date": "2023-09-02 13:00:00",
-    // //             "end_date": "2023-09-18 01:00:00",
-    // //             "countrycode": "ESP",
-    // //             "severity": 0,
-    // //             "severity_description": "Magnitude 0 ",
-    // //             "unit": "",
-    // //             "details": {
-    // //                 "Death": "3",
-    // //                 "Displaced": "6",
-    // //                 "Countries": "Spain",
-    // //                 "From - To": "02 Sep - 18 Sep"
-    // //             },
-    // //             "continent": "eur",
-    // //             "eventid1": 1102202,
-    // //             "polygondate": "2023-10-30 04:15:41"
-    // //         }
-    // //    ]
-    // // }
-
-    //     string memory data = bytes32ToString(_result);
-    //     // TODO parseJSON
-
-    //     // for loop through events
+    // sample response:
+    // {
+    //     "message": "success",
+    //     "result": [
+    //         {
+    //             "polygonlabel": "Global area",
+    //             "geometry": {
+    //                 "type": "Point",
+    //                 "coordinates": [
+    //                     -3.836608162668696,
+    //                     40.212051450000004
+    //                 ]
+    //             },
+    //             "event_type": "FL",
+    //             "name": "Flood in Spain",
+    //             "alert_level": "Green",
+    //             "active": true,
+    //             "country": "Spain",
+    //             "start_date": "2023-09-02 13:00:00",
+    //             "end_date": "2023-09-18 01:00:00",
+    //             "countrycode": "ESP",
+    //             "severity": 0,
+    //             "severity_description": "Magnitude 0 ",
+    //             "unit": "",
+    //             "details": {
+    //                 "Death": "3",
+    //                 "Displaced": "6",
+    //                 "Countries": "Spain",
+    //                 "From - To": "02 Sep - 18 Sep"
+    //             },
+    //             "continent": "eur",
+    //             "eventid1": 1102202,
+    //             "polygondate": "2023-10-30 04:15:41"
+    //         }
+    //    ]
     // }
+
+        string memory data = bytes32ToString(result);
+        int n = parseJSON(data, "get,length,somehow"); //TODO
+
+        // for loop through events
+    }
 
     // reference: https://gist.github.com/alexroan/a8caf258218f4065894ecd8926de39e7
     function bytes32ToString(bytes32 _bytes32) public pure returns (string memory) {
