@@ -62,24 +62,11 @@ contract DisasterCrowdfunding is ChainlinkClient, Ownable {
         emit RequestMade(requestId);
     }
 
-    function fulfill(bytes32 requestId, bytes32 result) public recordChainlinkFulfillment(requestId) {
+    function fulfill(bytes32 requestId, bytes memory result) public recordChainlinkFulfillment(requestId) {
         emit RequestProcessed(requestId);
 
-        string memory location = bytes32ToString(result);
+        string memory location = string(result);
         performPayout(location);
-    }
-
-    // reference: https://gist.github.com/alexroan/a8caf258218f4065894ecd8926de39e7
-    function bytes32ToString(bytes32 _bytes32) public pure returns (string memory) {
-        uint8 i = 0;
-        while(i < 32 && _bytes32[i] != 0) {
-            i++;
-        }
-        bytes memory bytesArray = new bytes(i);
-        for (i = 0; i < 32 && _bytes32[i] != 0; i++) {
-            bytesArray[i] = _bytes32[i];
-        }
-        return string(bytesArray);
     }
 
     function performPayout(string memory location) public {
