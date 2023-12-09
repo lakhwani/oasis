@@ -1,4 +1,4 @@
-export const mainContractAddress = "0x2aD949E84aed142b4eF4b90E1812296E00A6B1F7";
+export const mainContractAddress = "0xc192e115660bb15Aeb00B0DfDDc97e2dC4a15076";
 
 export const mainContractABI = [
   {
@@ -177,7 +177,7 @@ export const mainContractABI = [
       },
       {
         internalType: "string",
-        name: "apiKey",
+        name: "accessToken",
         type: "string",
       },
     ],

@@ -1,7 +1,7 @@
 "use client";
 
 import { useMetamask } from "@/hooks/useMetamask";
-import { ethers, parseEther } from "ethers";
+import { ethers, parseEther, formatEther } from "ethers";
 import {
   Flex,
   Box,
@@ -66,10 +66,16 @@ export default function DonateBox() {
       await window.ethereum.request({ method: "eth_requestAccounts" });
 
       // Create a new instance of the ethers.js provider to interact with the Ethereum network
-      const provider = new ethers.BrowserProvider(window.ethereum);
+      const provider = new ethers.BrowserProvider(window.ethereum, {
+        chainId: 11155111,
+      });
 
       // Get the signer from the provider, which is the connected account
       const signer = await provider.getSigner();
+
+      // Log the balance of the connected account
+      const balance = await provider.getBalance(await signer.getAddress());
+      console.log(`Wallet balance: ${formatEther(balance)} ETH`);
 
       const contractAddress = mainContractAddress;
       const contractABI = mainContractABI;
@@ -83,7 +89,7 @@ export default function DonateBox() {
 
       // Call the makeDonation function from the contract
       const tx = await contract.makeDonation({
-        value: parseEther(donationAmount),
+        value: parseEther("0.00001"),
       });
 
       // Wait for the transaction to be confirmed
