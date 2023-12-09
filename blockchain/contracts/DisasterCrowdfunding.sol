@@ -50,13 +50,13 @@ contract DisasterCrowdfunding is ChainlinkClient, Ownable {
         walletByLocation[location].push(verifiedWallet);
     }
 
-    // date format: 2023-09-01 00:00:00
-    // pass in the entire url because solidity does not support string concatenation: "https://api.ambeedata.com/disasters/history?from="+date+"&page=1"
-    function checkForPayout(string memory url, string memory apiKey) public {
+    // pass in the entire url because solidity does not support string concatenation: "https://api.predicthq.com/v1/events/?category=disasters&active.gte=2023-12-09T00:00:00&active.lte=2023-12-09T23:59:59"
+    // pass in "Bearer <ACCESS TOKEN>"
+    function checkForPayout(string memory url, string memory accessToken) public {
         Chainlink.Request memory request = buildChainlinkRequest(jobId, address(this), this.fulfill.selector);
         request.add("get", url);
-        request.add("x-api-key", apiKey);
-        request.add("path", "result,0,location");
+        request.add("Authorization", accessToken);
+        request.add("path", "result,0,country");
 
         bytes32 requestId = sendChainlinkRequest(request, fee);
         emit RequestMade(requestId);
