@@ -19,13 +19,13 @@ export default function DonateBox() {
     <Flex align={"center"} justify={"center"} minW="100">
       <Stack spacing={8} mx={"auto"} maxW={"lg"} py={12} px={6}>
         <Stack align={"center"}>
-          <Heading fontSize={"4xl"}>Donate </Heading>
+          <Heading fontSize={"4xl"}>Donation Box </Heading>
           <Text fontSize={"md"} color={"gray.600"} align={"center"}>
             Make a donation that is securely stored in our smart contract, and
             contribute to our list of partners today.
           </Text>
           <Text fontSize={"sm"} color={"gray.600"} align={"center"}>
-            To become a partner, click here.
+            To learn more about our partner, click <u>here</u>.
           </Text>
         </Stack>
         <Box
