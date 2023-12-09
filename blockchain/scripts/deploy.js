@@ -1,11 +1,15 @@
 async function main() {
   const [deployer] = await ethers.getSigners();
-  console.log('Deploying contracts with the account:', deployer.address);
+  console.log('Deploying contracts with ', deployer.address);
 
   const DisasterCrowdfunding = await ethers.getContractFactory('DisasterCrowdfunding');
-  const disasterCrowdfunding = await DisasterCrowdfunding.deploy();
+  const contract = await DisasterCrowdfunding.deploy();
 
-  console.log('DisasterCrowdfunding deployed to:', disasterCrowdfunding.address);
+  await contract.waitForDeployment();
+
+  const contractAddress = await contract.getAddress()
+
+  console.log("Contract Address:", contractAddress);
 }
 
 main()
