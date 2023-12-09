@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.20;
 
 /**
  * Request testnet LINK and ETH here: https://faucets.chain.link/
@@ -8,33 +8,35 @@ pragma solidity ^0.8.0;
  * sepolia: https://faucets.chain.link/sepolia
  */
 
-/**
- *  TODO
- * 
- * - how to estimate fee????
- * - parseJSON
- * - make ownable + set addVerifiedWallet to onlyOwner
- * - testing
- * 
- * 
- */
-
 import "@chainlink/contracts/src/v0.8/ChainlinkClient.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract DisasterCrowdfunding is ChainlinkClient {
+import "@openzeppelin/contracts/utils/Strings.sol";
+
+contract DisasterCrowdfunding is ChainlinkClient, Ownable {
+
     using Chainlink for Chainlink.Request;
+    using Strings for uint256;
 
     uint256 public pool;
     uint256 constant share = 50;
 
     mapping(string => address[]) walletByLocation;
 
+    bytes32 private jobIdForHandler;
+    uint256 private feeForHandler;
+
     bytes32 private jobId;
     uint256 private fee;
 
-    event RequestPayoutCheck(bytes32 indexed requestId);
+    string private processing; // depression :(
 
-    constructor() {
+    event HandlerRequestMade(bytes32 requestId);
+    event LocationRequestMade(bytes32 requestId);
+    event HandlerRequestProcessed(bytes32 requestId);
+    event LocationRequestProcessed(bytes32 requestId);
+
+    constructor() Ownable(msg.sender) {
 
         // reference: https://docs.chain.link/resources/link-token-contracts
         setChainlinkToken(0x779877A7B0D9E8603169DdbD7836e478b4624789); // sepolia
@@ -44,69 +46,48 @@ contract DisasterCrowdfunding is ChainlinkClient {
         jobId = "7da2702f37fd48e5b1b9a5715e3509b6"; // GET > bytes
 
         fee = (1 * LINK_DIVISIBILITY) / 10; // TODO ????
+
+        jobIdForHandler = "ca98366cc7314957b8c012c72f05aeeb"; // GET > uint256
+        feeForHandler = (1 * LINK_DIVISIBILITY) / 10; // TODO ????
     }
 
     function makeDonation() external payable {
         pool += msg.value;
     }
 
-    function addVerifiedWallet(string memory location, address verifiedWallet) public {
+    function addVerifiedWallet(string memory location, address verifiedWallet) public onlyOwner {
         walletByLocation[location].push(verifiedWallet);
     }
 
     // date format: 2023-09-01 00:00:00
     // pass in the entire url because solidity does not support string concatenation: "https://api.ambeedata.com/disasters/history?from="+date+"&page=1"
     function checkForPayout(string memory url) public {
-        Chainlink.Request memory request = buildChainlinkRequest(jobId, address(this), this.fulfill.selector);
+        Chainlink.Request memory request = buildChainlinkRequest(jobIdForHandler, address(this), this.fulfillHandler.selector);
         request.add("get", url);
+        request.add("path", "result,length");
 
-        bytes32 requestId = sendChainlinkRequest(request, fee);
-        emit RequestPayoutCheck(requestId);
+        bytes32 requestId = sendChainlinkRequest(request, feeForHandler);
+        emit HandlerRequestMade(requestId);
     }
 
-    function fulfill(bytes32 requestId, bytes memory result) public recordChainlinkFulfillment(requestId) {
+    function fulfillHandler(bytes32 requestId, uint256 n) public recordChainlinkFulfillment(requestId) {
+        emit HandlerRequestProcessed(requestId);
+        
+        for (uint256 i = 0; i < n; i++) {
+            Chainlink.Request memory request = buildChainlinkRequest(jobId, address(this), this.fulfill.selector);
+            request.add("get", processing);
+            request.add("path", string(abi.encodePacked("result,", n.toString(), ",country")));
+            
+            bytes32 newRequestId = sendChainlinkRequest(request, fee);
+            emit LocationRequestMade(newRequestId);
+        }
+    }
 
-    // sample response:
-    // {
-    //     "message": "success",
-    //     "result": [
-    //         {
-    //             "polygonlabel": "Global area",
-    //             "geometry": {
-    //                 "type": "Point",
-    //                 "coordinates": [
-    //                     -3.836608162668696,
-    //                     40.212051450000004
-    //                 ]
-    //             },
-    //             "event_type": "FL",
-    //             "name": "Flood in Spain",
-    //             "alert_level": "Green",
-    //             "active": true,
-    //             "country": "Spain",
-    //             "start_date": "2023-09-02 13:00:00",
-    //             "end_date": "2023-09-18 01:00:00",
-    //             "countrycode": "ESP",
-    //             "severity": 0,
-    //             "severity_description": "Magnitude 0 ",
-    //             "unit": "",
-    //             "details": {
-    //                 "Death": "3",
-    //                 "Displaced": "6",
-    //                 "Countries": "Spain",
-    //                 "From - To": "02 Sep - 18 Sep"
-    //             },
-    //             "continent": "eur",
-    //             "eventid1": 1102202,
-    //             "polygondate": "2023-10-30 04:15:41"
-    //         }
-    //    ]
-    // }
+    function fulfill(bytes32 requestId, bytes32 result) public recordChainlinkFulfillment(requestId) {
+        emit LocationRequestProcessed(requestId);
 
-        string memory data = bytes32ToString(result);
-        int n = parseJSON(data, "get,length,somehow"); //TODO
-
-        // for loop through events
+        string memory location = bytes32ToString(result);
+        performPayout(location);
     }
 
     // reference: https://gist.github.com/alexroan/a8caf258218f4065894ecd8926de39e7
