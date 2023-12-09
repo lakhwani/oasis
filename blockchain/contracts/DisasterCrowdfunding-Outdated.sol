@@ -20,29 +20,10 @@ pragma solidity ^0.8.20;
 
 import "@chainlink/contracts/src/v0.8/ChainlinkClient.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
-Certainly! Here are some improvements to your code:
-
-    Code Structure and Comments: I'll refine the comments to make them clearer and organize the TODOs more effectively.
-    Modifiers: I'll add some modifiers to increase code readability and security.
-    Error Handling: Enhance error handling to provide more informative error messages.
-    Safe Math: Implement SafeMath to prevent potential overflow or underflow issues when dealing with arithmetic operations.
-
-Here's an improved version of your code:
-
-solidity
-
-// SPDX-License-Identifier: MIT
-pragma solidity ^0.8.20;
-
-import "@chainlink/contracts/src/v0.8/ChainlinkClient.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
-
-import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 
 contract DisasterCrowdfunding is ChainlinkClient, Ownable {
 
     using Chainlink for Chainlink.Request;
-    using SafeMath for uint256;
 
     uint256 public pool;
     uint256 constant share = 50;

@@ -12,45 +12,32 @@ pragma solidity ^0.8.20;
  *  TODO
  * 
  * - how to estimate fee????
- * - read more than 1 event
  * - testing
- * 
  * 
  */
 
 import "@chainlink/contracts/src/v0.8/ChainlinkClient.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
-Certainly! Here are some improvements to your code:
 
-    Code Structure and Comments: I'll refine the comments to make them clearer and organize the TODOs more effectively.
-    Modifiers: I'll add some modifiers to increase code readability and security.
-    Error Handling: Enhance error handling to provide more informative error messages.
-    Safe Math: Implement SafeMath to prevent potential overflow or underflow issues when dealing with arithmetic operations.
-
-Here's an improved version of your code:
-
-solidity
-
-// SPDX-License-Identifier: MIT
-pragma solidity ^0.8.20;
-
-import "@chainlink/contracts/src/v0.8/ChainlinkClient.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
-
-import "@openzeppelin/contracts/utils/math/SafeMath.sol";
+import "@openzeppelin/contracts/utils/Strings.sol";
 
 contract DisasterCrowdfunding is ChainlinkClient, Ownable {
 
     using Chainlink for Chainlink.Request;
-    using SafeMath for uint256;
+    using Strings for uint256;
 
     uint256 public pool;
     uint256 constant share = 50;
 
     mapping(string => address[]) walletByLocation;
 
+    bytes32 private jobIdHandler;
+    uint256 private feeHandler;
+
     bytes32 private jobId;
     uint256 private fee;
+
+    string private processing;
 
     constructor() Ownable(msg.sender) {
 
@@ -62,6 +49,9 @@ contract DisasterCrowdfunding is ChainlinkClient, Ownable {
         jobId = "7da2702f37fd48e5b1b9a5715e3509b6"; // GET > bytes
 
         fee = (1 * LINK_DIVISIBILITY) / 10; // TODO ????
+
+        jobIdHandler = "ca98366cc7314957b8c012c72f05aeeb"; // GET > uint256
+        feeHandler = (1 * LINK_DIVISIBILITY) / 10; // TODO ????
     }
 
     function makeDonation() external payable {
@@ -75,11 +65,21 @@ contract DisasterCrowdfunding is ChainlinkClient, Ownable {
     // date format: 2023-09-01 00:00:00
     // pass in the entire url because solidity does not support string concatenation: "https://api.ambeedata.com/disasters/history?from="+date+"&page=1"
     function checkForPayout(string memory url) public {
-        Chainlink.Request memory request = buildChainlinkRequest(jobId, address(this), this.fulfill.selector);
+        Chainlink.Request memory request = buildChainlinkRequest(jobIdHandler, address(this), this.fulfillHandler.selector);
         request.add("get", url);
-        request.add("path", "result,0,country");
+        request.add("path", "result,length");
 
-        bytes32 requestId = sendChainlinkRequest(request, fee);
+        bytes32 requestId = sendChainlinkRequest(request, feeHandler);
+    }
+
+    function fulfillHandler(bytes32 requestId, uint256 n) public recordChainlinkFulfillment(requestId) {
+        for (uint256 i = 0; i < n; i++) {
+            Chainlink.Request memory request = buildChainlinkRequest(jobId, address(this), this.fulfill.selector);
+            request.add("get", processing);
+            request.add("path", string(abi.encodePacked("result,", n.toString(), ",country")));
+            
+            bytes32 requestId = sendChainlinkRequest(request, fee);
+        }
     }
 
     function fulfill(bytes32 requestId, bytes32 result) public recordChainlinkFulfillment(requestId) {
