@@ -8,14 +8,6 @@ pragma solidity ^0.8.20;
  * sepolia: https://faucets.chain.link/sepolia
  */
 
-/**
- *  TODO
- * 
- * - how to estimate fee????
- * - testing
- * 
- */
-
 import "@chainlink/contracts/src/v0.8/ChainlinkClient.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
@@ -79,20 +71,20 @@ contract DisasterCrowdfunding is ChainlinkClient, Ownable {
     }
 
     function fulfillHandler(bytes32 requestId, uint256 n) public recordChainlinkFulfillment(requestId) {
-        emit HandlerRequestCallback(requestId);
+        emit HandlerRequestProcessed(requestId);
         
         for (uint256 i = 0; i < n; i++) {
             Chainlink.Request memory request = buildChainlinkRequest(jobId, address(this), this.fulfill.selector);
             request.add("get", processing);
             request.add("path", string(abi.encodePacked("result,", n.toString(), ",country")));
             
-            bytes32 requestId = sendChainlinkRequest(request, fee);
-            emit LocationRequestMade(requestId);
+            bytes32 newRequestId = sendChainlinkRequest(request, fee);
+            emit LocationRequestMade(newRequestId);
         }
     }
 
     function fulfill(bytes32 requestId, bytes32 result) public recordChainlinkFulfillment(requestId) {
-        emit LocationRequestCallback(requestId);
+        emit LocationRequestProcessed(requestId);
 
         string memory location = bytes32ToString(result);
         performPayout(location);
