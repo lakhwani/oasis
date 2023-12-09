@@ -8,16 +8,6 @@ pragma solidity ^0.8.20;
  * sepolia: https://faucets.chain.link/sepolia
  */
 
-/**
- *  TODO
- * 
- * - how to estimate fee????
- * - read more than 1 event
- * - testing
- * 
- * 
- */
-
 import "@chainlink/contracts/src/v0.8/ChainlinkClient.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 

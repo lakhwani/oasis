@@ -31,13 +31,18 @@ contract DisasterCrowdfunding is ChainlinkClient, Ownable {
 
     mapping(string => address[]) walletByLocation;
 
-    bytes32 private jobIdHandler;
-    uint256 private feeHandler;
+    bytes32 private jobIdForHandler;
+    uint256 private feeForHandler;
 
     bytes32 private jobId;
     uint256 private fee;
 
-    string private processing;
+    string private processing; // depression :(
+
+    event HandlerRequestMade(bytes32 requestId);
+    event LocationRequestMade(bytes32 requestId);
+    event HandlerRequestProcessed(bytes32 requestId);
+    event LocationRequestProcessed(bytes32 requestId);
 
     constructor() Ownable(msg.sender) {
 
@@ -50,8 +55,8 @@ contract DisasterCrowdfunding is ChainlinkClient, Ownable {
 
         fee = (1 * LINK_DIVISIBILITY) / 10; // TODO ????
 
-        jobIdHandler = "ca98366cc7314957b8c012c72f05aeeb"; // GET > uint256
-        feeHandler = (1 * LINK_DIVISIBILITY) / 10; // TODO ????
+        jobIdForHandler = "ca98366cc7314957b8c012c72f05aeeb"; // GET > uint256
+        feeForHandler = (1 * LINK_DIVISIBILITY) / 10; // TODO ????
     }
 
     function makeDonation() external payable {
@@ -65,24 +70,30 @@ contract DisasterCrowdfunding is ChainlinkClient, Ownable {
     // date format: 2023-09-01 00:00:00
     // pass in the entire url because solidity does not support string concatenation: "https://api.ambeedata.com/disasters/history?from="+date+"&page=1"
     function checkForPayout(string memory url) public {
-        Chainlink.Request memory request = buildChainlinkRequest(jobIdHandler, address(this), this.fulfillHandler.selector);
+        Chainlink.Request memory request = buildChainlinkRequest(jobIdForHandler, address(this), this.fulfillHandler.selector);
         request.add("get", url);
         request.add("path", "result,length");
 
-        bytes32 requestId = sendChainlinkRequest(request, feeHandler);
+        bytes32 requestId = sendChainlinkRequest(request, feeForHandler);
+        emit HandlerRequestMade(requestId);
     }
 
     function fulfillHandler(bytes32 requestId, uint256 n) public recordChainlinkFulfillment(requestId) {
+        emit HandlerRequestCallback(requestId);
+        
         for (uint256 i = 0; i < n; i++) {
             Chainlink.Request memory request = buildChainlinkRequest(jobId, address(this), this.fulfill.selector);
             request.add("get", processing);
             request.add("path", string(abi.encodePacked("result,", n.toString(), ",country")));
             
             bytes32 requestId = sendChainlinkRequest(request, fee);
+            emit LocationRequestMade(requestId);
         }
     }
 
     function fulfill(bytes32 requestId, bytes32 result) public recordChainlinkFulfillment(requestId) {
+        emit LocationRequestCallback(requestId);
+
         string memory location = bytes32ToString(result);
         performPayout(location);
     }
