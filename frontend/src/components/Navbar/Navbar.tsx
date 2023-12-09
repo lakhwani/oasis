@@ -11,6 +11,7 @@ import {
   Icon,
   Popover,
   PopoverTrigger,
+  Tag,
   PopoverContent,
   useColorModeValue,
   useBreakpointValue,
@@ -22,9 +23,40 @@ import {
   ChevronDownIcon,
   ChevronRightIcon,
 } from "@chakra-ui/icons";
+import { useMetamask } from "@/hooks/useMetamask";
+import { useListen } from "@/hooks/useListen";
+import { trimWalletAddress } from "@/utils/utils";
+import Logo from "@/components/Logo/Logo";
 
 export default function Navbar() {
   const { isOpen, onToggle } = useDisclosure();
+  const {
+    dispatch,
+    state: { status, isMetamaskInstalled, wallet, balance },
+  } = useMetamask();
+  const listen = useListen();
+
+  const handleConnect = async () => {
+    dispatch({ type: "loading" });
+    const accounts = await window.ethereum.request({
+      method: "eth_requestAccounts",
+    });
+
+    if (accounts.length > 0) {
+      const balance = await window.ethereum!.request({
+        method: "eth_getBalance",
+        params: [accounts[0], "latest"],
+      });
+      dispatch({ type: "connect", wallet: accounts[0], balance });
+
+      // we can register an event listener for changes to the users wallet
+      listen();
+    }
+  };
+
+  const handleDisconnect = () => {
+    dispatch({ type: "disconnect" });
+  };
 
   return (
     <Box>
@@ -53,15 +85,8 @@ export default function Navbar() {
             aria-label={"Toggle Navigation"}
           />
         </Flex>
+        <Logo src="https://cdn.discordapp.com/attachments/1182854464961532024/1182861669131636867/Main_Logo.png?ex=65863cc6&is=6573c7c6&hm=d73306c398a2b8685c8a8db9bece0529da0f77593a92503027a8789fe2d81629&"></Logo>
         <Flex flex={{ base: 1 }} justify={{ base: "center", md: "start" }}>
-          <Text
-            textAlign={useBreakpointValue({ base: "center", md: "left" })}
-            fontFamily={"heading"}
-            color={useColorModeValue("gray.800", "white")}
-          >
-            Oasis Release Fund
-          </Text>
-
           <Flex display={{ base: "none", md: "flex" }} ml={10}>
             <DesktopNav />
           </Flex>
@@ -82,20 +107,40 @@ export default function Navbar() {
           >
             Sign In
           </Button> */}
-          <Button
-            as={"a"}
-            display={{ base: "none", md: "inline-flex" }}
-            fontSize={"sm"}
-            fontWeight={600}
-            color={"white"}
-            bg={"blue.500"}
-            href={"#"}
-            _hover={{
-              bg: "blue.600",
-            }}
-          >
-            Connect Wallet
-          </Button>
+          {wallet ? (
+            <>
+              <Tag padding="12px">{trimWalletAddress(wallet)}</Tag>
+              <Button
+                as={"a"}
+                display={{ base: "none", md: "inline-flex" }}
+                fontSize={"sm"}
+                fontWeight={600}
+                color={"white"}
+                bg={"blue.500"}
+                _hover={{
+                  bg: "blue.600",
+                }}
+                onClick={handleDisconnect}
+              >
+                Disconnect Wallet
+              </Button>
+            </>
+          ) : (
+            <Button
+              as={"a"}
+              display={{ base: "none", md: "inline-flex" }}
+              fontSize={"sm"}
+              fontWeight={600}
+              color={"white"}
+              bg={"blue.500"}
+              _hover={{
+                bg: "blue.600",
+              }}
+              onClick={handleConnect}
+            >
+              Connect Wallet
+            </Button>
+          )}
         </Stack>
       </Flex>
 
@@ -274,11 +319,11 @@ const NAV_ITEMS: Array<NavItem> = [
     href: "/donate",
   },
   {
-    label: "NPOs & Partners",
+    label: "Partners",
     href: "/partners",
   },
   {
-    label: "Fund Release Tracker",
+    label: "Fund",
     href: "/tracker",
   },
 ];

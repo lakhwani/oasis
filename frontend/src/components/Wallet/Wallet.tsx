@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import { useMetamask } from "@/hooks/useMetamask";
 import { useListen } from "@/hooks/useListen";

@@ -1,6 +1,283 @@
+export const mainContractAddress = "0x2aD949E84aed142b4eF4b90E1812296E00A6B1F7";
+
+export const mainContractABI = [
+  {
+    inputs: [],
+    stateMutability: "nonpayable",
+    type: "constructor",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "owner",
+        type: "address",
+      },
+    ],
+    name: "OwnableInvalidOwner",
+    type: "error",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "account",
+        type: "address",
+      },
+    ],
+    name: "OwnableUnauthorizedAccount",
+    type: "error",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "bytes32",
+        name: "id",
+        type: "bytes32",
+      },
+    ],
+    name: "ChainlinkCancelled",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "bytes32",
+        name: "id",
+        type: "bytes32",
+      },
+    ],
+    name: "ChainlinkFulfilled",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "bytes32",
+        name: "id",
+        type: "bytes32",
+      },
+    ],
+    name: "ChainlinkRequested",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "address",
+        name: "contributor",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "amount",
+        type: "uint256",
+      },
+    ],
+    name: "DonationMade",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "previousOwner",
+        type: "address",
+      },
+      {
+        indexed: true,
+        internalType: "address",
+        name: "newOwner",
+        type: "address",
+      },
+    ],
+    name: "OwnershipTransferred",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "bytes32",
+        name: "requestId",
+        type: "bytes32",
+      },
+    ],
+    name: "RequestMade",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "bytes32",
+        name: "requestId",
+        type: "bytes32",
+      },
+    ],
+    name: "RequestProcessed",
+    type: "event",
+  },
+  {
+    inputs: [
+      {
+        internalType: "string",
+        name: "location",
+        type: "string",
+      },
+      {
+        internalType: "address",
+        name: "verifiedWallet",
+        type: "address",
+      },
+    ],
+    name: "addVerifiedWallet",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "_bytes32",
+        type: "bytes32",
+      },
+    ],
+    name: "bytes32ToString",
+    outputs: [
+      {
+        internalType: "string",
+        name: "",
+        type: "string",
+      },
+    ],
+    stateMutability: "pure",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "string",
+        name: "url",
+        type: "string",
+      },
+      {
+        internalType: "string",
+        name: "apiKey",
+        type: "string",
+      },
+    ],
+    name: "checkForPayout",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "requestId",
+        type: "bytes32",
+      },
+      {
+        internalType: "bytes32",
+        name: "result",
+        type: "bytes32",
+      },
+    ],
+    name: "fulfill",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "makeDonation",
+    outputs: [],
+    stateMutability: "payable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "owner",
+    outputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "string",
+        name: "location",
+        type: "string",
+      },
+    ],
+    name: "performPayout",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "pool",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "renounceOwnership",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "newOwner",
+        type: "address",
+      },
+    ],
+    name: "transferOwnership",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+];
+
 export const partners = [
   {
     name: "GiveDirectly",
+    type: "Nonprofit Organsation",
+    description:
+      "A nonprofit organization empowering people in poverty through direct cash transfers, allowing them to choose the best ways to improve their lives, with over $700 million delivered to 1.5 million people.",
     founded: 2008.0,
     country:
       "Bangladesh, DRC, Kenya, Liberia, Malawi, Mozambique, Morocco, Nigeria, Rwanda, Turkey, Uganda, USA, and Yemen",
@@ -13,6 +290,9 @@ export const partners = [
   },
   {
     name: "Give Crypto",
+    type: "Nonprofit Organsation",
+    description:
+      "A nonprofit distributing cryptocurrency to people in poverty, aiming to financially empower individuals by connecting donors and recipients worldwide, especially in areas without traditional banking access.",
     founded: 2018.0,
     country: "Peru, Venezuela, DRC",
     city: "Various",
@@ -24,6 +304,9 @@ export const partners = [
   },
   {
     name: "Save the Children",
+    type: "International Non-Governmental Organization (NGO)",
+    description:
+      "An international NGO dedicated to improving children's lives through better education, healthcare, and economic opportunities, advocating for children's rights and providing aid in times of need.",
     founded: 1932.0,
     country:
       "Burkina Faso, Democratic Republic of Congo, Egypt, Ethiopia, Kenya, Malawi, Mali, Mozambique, Niger, Nigeria, Rwanda, Sierra Leone, Somalia, South Sudan, Sudan, Tanzania, Uganda, Zambia, Zimbabwe, Afghanistan, Bangladesh, Bhutan, Cambodia, China, India, Indonesia, Iraq, Jordan, Laos, Lebanon, Myanmar, Nepal, Pakistan, Philippines, Syria, Thailand, T\u00fcrkiye, Vietnam, West Bank, Yemen, Ukraine, Dominican Republic, El Salvador, Guatemala, Haiti, Honduras, Mexico, Nicaragua, United States, Bolivia, Colombia, Venezuela.",
@@ -37,6 +320,9 @@ export const partners = [
   },
   {
     name: "Direct Relief",
+    type: "Nonprofit Organsation",
+    description:
+      "A humanitarian aid organization that provides medical assistance to people affected by poverty or emergencies globally, focusing on efficient delivery of medical resources and commitment to impartial aid.",
     founded: 1948.0,
     country:
       "Angola, Benin, Botswana, Burkina Faso, Burundi, Cameroon, Chad, C\u00f4te d\u2019Ivoire, Democratic Republic of Congo, Djibouti, Egypt, Eritrea, Eswatini, Ethiopia, Gambia, Ghana, Guinea, Kenya, Lesotho, Liberia, Madagascar, Malawi, Mali, Mauritania, Morocco, Mozambique, Namibia, Niger, Nigeria, Rwanda, Senegal, Sierra Leone, Somalia, Somaliland, South Africa, South Sudan, Sudan, Tanzania, Togo, Tunisia, Uganda, Zimbabwe, Afghanistan, Armenia, Bangladesh, Cambodia, China, India, Indonesia, Iraq, Israel, Japan, Jordan, Laos, Lebanon, Malaysia, Mongolia, Myanmar, Nepal, Pakistan, Palestinian Territories, Philippines, Sri Lanka, Syria, Tajikistan, Thailand, Turkey, Vietnam, Yemen, Anguilla, Antigua and Barbuda, Barbados, Belize, Cuba, Dominica, Dominican Republic, El Salvador, Guatemala, Haiti, Honduras, Jamaica, Netherlands Antilles, Nicaragua, Panama, Saint Kitts and Nevis, Saint Lucia, Saint Vincent and the Grenadines, The Bahamas, Turks and Caicos Islands, Virgin Islands (British), Albania, Belarus, Bosnia and Herzegovina, Greece, Italy, Kosovo, Moldova, North Macedonia, Poland, Romania, Slovakia, Spain, Ukraine, Mexico, United States, Australia, Fiji, Marshall Islands, Micronesia (Federated States of), Nauru, New Zealand, Papua New Guinea, Samoa, Solomon Islands, Tonga, Vanuatu, Argentina, Bolivia, Brazil, Chile, Colombia, Ecuador, Guyana, Paraguay, Peru, Suriname",
@@ -50,6 +336,9 @@ export const partners = [
   },
   {
     name: "GRACEaid",
+    type: "Charity",
+    description:
+      "A charity supporting refugees, asylum seekers, and survivors of trafficking and abuse by providing essential daily items, operating through a charity shop and a voucher scheme, and adapting to challenges like COVID-19 and Brexit.",
     founded: 2015.0,
     country: "UK based",
     city: "Various",

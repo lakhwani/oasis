@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useEffect, type PropsWithChildren } from "react";
 
 type ConnectAction = { type: "connect"; wallet: string; balance: string };
@@ -10,13 +12,15 @@ type PageLoadedAction = {
 };
 type LoadingAction = { type: "loading" };
 type IdleAction = { type: "idle" };
+type HydrateAction = { type: "hydrate"; payload: State };
 
 type Action =
   | ConnectAction
   | DisconnectAction
   | PageLoadedAction
   | LoadingAction
-  | IdleAction;
+  | IdleAction
+  | HydrateAction;
 
 type Dispatch = (action: Action) => void;
 
@@ -63,6 +67,9 @@ function metamaskReducer(state: State, action: Action): State {
     case "idle": {
       return { ...state, status: "idle" };
     }
+    case "hydrate": {
+      return { ...state, ...action.payload };
+    }
 
     default: {
       throw new Error("Unhandled action type");
@@ -76,7 +83,27 @@ const MetamaskContext = React.createContext<
 
 function MetamaskProvider({ children }: PropsWithChildren) {
   const [state, dispatch] = React.useReducer(metamaskReducer, initialState);
+
+  useEffect(() => {
+    // This code runs after component mount and therefore only on the client
+    const localState = localStorage.getItem("metamaskState");
+    if (localState) {
+      dispatch({ type: "hydrate", payload: JSON.parse(localState) });
+    }
+  }, []);
+
+  useEffect(() => {
+    // Save to localStorage whenever the state changes
+    localStorage.setItem("metamaskState", JSON.stringify(state));
+  }, [state]);
+
   const value = { state, dispatch };
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      window.localStorage.setItem("metamaskState", JSON.stringify(state));
+    }
+  }, [state]);
 
   return (
     <MetamaskContext.Provider value={value}>

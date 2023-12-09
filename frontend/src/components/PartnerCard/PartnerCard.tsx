@@ -10,9 +10,14 @@ import {
   Avatar,
   useColorModeValue,
 } from "@chakra-ui/react";
+import SocialButton from "../SocialButton/SocialButton";
+import { FaLink } from "react-icons/fa6";
+import PartnerAccordion from "./PartnerAccordion";
 
 type PartnerCardProps = {
   name: string;
+  type: string;
+  description: string;
   founded: number;
   country: string;
   link: string;
@@ -22,6 +27,8 @@ type PartnerCardProps = {
 
 export default function PartnerCard({
   name,
+  type,
+  description,
   founded,
   country,
   link,
@@ -33,6 +40,7 @@ export default function PartnerCard({
       <Box
         maxW={"500px"}
         w={"full"}
+        minH="20rem"
         // eslint-disable-next-line react-hooks/rules-of-hooks
         bg={useColorModeValue("white", "gray.900")}
         boxShadow={"2xl"}
@@ -56,7 +64,7 @@ export default function PartnerCard({
             fontSize={"sm"}
             letterSpacing={1.1}
           >
-            Blog
+            {type}
           </Text>
           <Heading
             // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -66,16 +74,20 @@ export default function PartnerCard({
           >
             {name}
           </Heading>
-          <Text color={"gray.500"}>Founded: {founded}</Text>
-          <Text color={"gray.500"}>Countries Supported: {country}</Text>
+          <Text color={"gray.600"}>Founded: {founded}</Text>
+          <Text color={"gray.600"}>{description}</Text>
+          <PartnerAccordion countries={country}></PartnerAccordion>
         </Stack>
+
         <Stack mt={6} direction={"row"} spacing={4} align={"center"}>
-          <Avatar
-            src={"https://avatars0.githubusercontent.com/u/1164541?v=4"}
-          />
+          <SocialButton label={"Github"} href={link}>
+            <FaLink />
+          </SocialButton>
           <Stack direction={"column"} spacing={0} fontSize={"sm"}>
-            <Text fontWeight={600}>Achim Rolle</Text>
-            <Text color={"gray.500"}>Feb 08, 2021 · 6min read</Text>
+            <Text fontWeight={400}>ETH Address:</Text>
+            <Text fontSize="xs" color={"gray.600"}>
+              {address}
+            </Text>
           </Stack>
         </Stack>
       </Box>

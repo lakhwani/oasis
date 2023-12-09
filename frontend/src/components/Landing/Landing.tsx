@@ -23,10 +23,7 @@ export default function CallToActionWithIllustration() {
           fontSize={{ base: "3xl", sm: "4xl", md: "6xl" }}
           lineHeight={"110%"}
         >
-          Empowering Disaster Relief{" "}
-          <Text as={"span"} color={"blue.400"}>
-            with Compassion
-          </Text>
+          Oasis Relief Fund
         </Heading>
         <Text color={"gray.500"} maxW={"3xl"}>
           Join our mission to provide timely and effective aid to
@@ -50,15 +47,15 @@ export default function CallToActionWithIllustration() {
             borderColor="blue.400"
             color="blue.400"
           >
-            How It Works
+            View our Partners
           </Button>
         </Stack>
         <Flex w={"full"}>
           {" "}
-          <Illustration
+          {/* <Illustration
             height={{ sm: "24rem", lg: "28rem" }}
             mt={{ base: 12, sm: 16 }}
-          />
+          /> */}
         </Flex>
       </Stack>
     </Container>

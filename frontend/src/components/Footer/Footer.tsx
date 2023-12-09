@@ -2,48 +2,14 @@
 
 import {
   Box,
-  chakra,
   Container,
   Stack,
   Text,
   useColorModeValue,
-  VisuallyHidden,
 } from "@chakra-ui/react";
 import { FaGithub } from "react-icons/fa";
 import { MdDeveloperMode } from "react-icons/md";
-import { ReactNode } from "react";
-
-const SocialButton = ({
-  children,
-  label,
-  href,
-}: {
-  children: ReactNode;
-  label: string;
-  href: string;
-}) => {
-  return (
-    <chakra.button
-      bg={useColorModeValue("blackAlpha.100", "whiteAlpha.100")}
-      rounded={"full"}
-      w={8}
-      h={8}
-      cursor={"pointer"}
-      as={"a"}
-      href={href}
-      display={"inline-flex"}
-      alignItems={"center"}
-      justifyContent={"center"}
-      transition={"background 0.3s ease"}
-      _hover={{
-        bg: useColorModeValue("blackAlpha.200", "whiteAlpha.200"),
-      }}
-    >
-      <VisuallyHidden>{label}</VisuallyHidden>
-      {children}
-    </chakra.button>
-  );
-};
+import SocialButton from "@/components/SocialButton/SocialButton";
 
 export default function Footer() {
   return (
@@ -60,7 +26,9 @@ export default function Footer() {
         justify={{ base: "center", md: "space-between" }}
         align={{ base: "center", md: "center" }}
       >
-        <Text fontSize={"sm"}>© 2023 Oasis Relief Fund. All rights reserved.</Text>
+        <Text fontSize={"sm"}>
+          © 2023 Oasis Relief Fund. All rights reserved.
+        </Text>
         <Stack direction={"row"} spacing={6}>
           <SocialButton label={"Github"} href={"#"}>
             <FaGithub />
