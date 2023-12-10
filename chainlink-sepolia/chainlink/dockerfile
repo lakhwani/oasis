@@ -1,0 +1,16 @@
+# Use the smartcontract/chainlink:2.7.0 image as the base image
+FROM smartcontract/chainlink:2.7.0
+
+# Create a directory in the container to hold configuration files
+RUN mkdir -p /chainlink/config
+
+# Set the working directory
+WORKDIR /chainlink
+
+# Copy config files from the host to the container
+COPY config.toml /chainlink/config/
+COPY secrets.toml /chainlink/config/
+# Add other necessary files if present (e.g., .api)
+
+# Command to start Chainlink node
+CMD ["chainlink", "node", "start", "-config", "/chainlink/config/config.toml", "-secrets", "/chainlink/config/secrets.toml"]
