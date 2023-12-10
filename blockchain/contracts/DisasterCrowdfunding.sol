@@ -16,10 +16,9 @@ contract DisasterCrowdfunding is ChainlinkClient, Ownable {
     using Chainlink for Chainlink.Request;
     
     uint256 public pool;
-    uint256 constant share = 10;
+    uint256 constant share = 50;
 
     mapping(string => address[]) walletByLocation;
-    address[] verifiedWallets;
 
     bytes32 private jobId;
     uint256 private fee;
@@ -49,7 +48,6 @@ contract DisasterCrowdfunding is ChainlinkClient, Ownable {
 
     function addVerifiedWallet(string memory location, address verifiedWallet) public onlyOwner {
         walletByLocation[location].push(verifiedWallet);
-        verifiedWallets.push(verifiedWallet);
     }
 
     // pass in the entire url because solidity does not support string concatenation: "https://api.predicthq.com/v1/events/?category=disasters&active.gte=2023-12-09T00:00:00&active.lte=2023-12-09T23:59:59"
@@ -85,25 +83,6 @@ contract DisasterCrowdfunding is ChainlinkClient, Ownable {
 
         for (uint256 i = 0; i < numberOfWallets; i++) {
             payable(walletByLocation[location][i]).transfer(x);
-        }
-
-        pool -= amount;
-    }
-
-    function performMonthlyPayout() public {
-
-        uint256 amount = pool / 100;
-        if (amount > address(this).balance) {
-            amount = address(this).balance;
-        }
-
-        uint256 numberOfWallets = verifiedWallets.length;
-        require(numberOfWallets > 0, "no verified wallets for this location");
-
-        uint256 x = amount / numberOfWallets;
-
-        for (uint256 i = 0; i < numberOfWallets; i++) {
-            payable(verifiedWallets[i]).transfer(x);
         }
 
         pool -= amount;
