@@ -1,3 +1,0 @@
-docker run --name cl-postgres -e POSTGRES_PASSWORD=alienvitalikalienvitalik -p 5432:5432 -d postgres
-
-docker run --name chainlink -v C:\Users\sabri\OneDrive\Documents\Projects\chainlink-hackathon-2023\.chainlink-sepolia:/chainlink -it -p 6688:6688 smartcontract/chainlink:2.5.0 node -config /chainlink/config.toml -secrets /chainlink/secrets.toml start
