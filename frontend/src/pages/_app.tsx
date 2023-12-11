@@ -10,7 +10,7 @@ export default function MyApp({ Component, pageProps }: AppProps) {
       <MetamaskProvider>
         <Flex direction="column" minH="100vh">
           <Navbar></Navbar>
-          <Box minH="90vH">
+          <Box minH="87vH">
             <Component {...pageProps} />
           </Box>
           <Footer></Footer>

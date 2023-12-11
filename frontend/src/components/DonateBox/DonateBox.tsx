@@ -66,9 +66,7 @@ export default function DonateBox() {
       await window.ethereum.request({ method: "eth_requestAccounts" });
 
       // Create a new instance of the ethers.js provider to interact with the Ethereum network
-      const provider = new ethers.BrowserProvider(window.ethereum, {
-        chainId: 11155111,
-      });
+      const provider = new ethers.BrowserProvider(window.ethereum);
 
       // Get the signer from the provider, which is the connected account
       const signer = await provider.getSigner();
@@ -96,7 +94,7 @@ export default function DonateBox() {
       await tx.wait();
       toast({
         title: "Donation Successful",
-        description: "Your donation has been processed.",
+        description: `Your donation has been processed. Transaction ID: ${tx.hash}`,
         status: "success",
         duration: 9000,
         isClosable: true,

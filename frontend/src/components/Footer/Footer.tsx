@@ -30,10 +30,16 @@ export default function Footer() {
           © 2023 Oasis Relief Fund. All rights reserved.
         </Text>
         <Stack direction={"row"} spacing={6}>
-          <SocialButton label={"Github"} href={"#"}>
+          <SocialButton
+            label={"Github"}
+            href={"https://github.com/lakhwani/oasis/"}
+          >
             <FaGithub />
           </SocialButton>
-          <SocialButton label={"Devpost"} href={"#"}>
+          <SocialButton
+            label={"Devpost"}
+            href={"https://devpost.com/software/oasis-fund-relief"}
+          >
             <MdDeveloperMode />
           </SocialButton>
         </Stack>
