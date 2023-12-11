@@ -24,7 +24,6 @@ PredictHQ is trusted and used by Uber, Amazon Alexa, Domin's, Accor Hotels, and 
 ![UI_Mockup_2](https://github.com/lakhwani/oasis/assets/68998300/65634fea-ad2d-4393-ac55-d6747a9e0f22)
 
 ## How to Run It
-To view our landing page: []
 To run our frontend application in Next.js: 
 1. Install Node.js v18.5.0 (npm 8.12.1)
 2. Install required dependencies (run the following):
@@ -37,4 +36,3 @@ npm run dev
 ```
 npm run dev
 ```
-
