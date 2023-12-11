@@ -17,22 +17,28 @@ Funds are accumulated through crowdfunding and held securely within our verified
 
 PredictHQ is trusted and used by Uber, Amazon Alexa, Domin's, Accor Hotels, and more. (https://www.predicthq.com/events/disasters)
 
-## Software Architecture 
+## Software Architecture
+
 ![Software Arch (1)](https://github.com/lakhwani/oasis/assets/68998300/9d5cc7f6-4c92-43fd-92ec-02e232967fc4)
 
 ## Our Application
+
 ![UI_Mockup_2](https://github.com/lakhwani/oasis/assets/68998300/65634fea-ad2d-4393-ac55-d6747a9e0f22)
 
 ## How to Run It
-To run our frontend application in Next.js: 
+
+To run our frontend application in Next.js:
+
 1. Install Node.js v18.5.0 (npm 8.12.1)
 2. Install required dependencies (run the following):
+
 ```
 cd frontend
 npm install
-npm run dev
 ```
+
 3. Start the frontend server
+
 ```
 npm run dev
 ```
