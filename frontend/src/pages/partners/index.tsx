@@ -26,7 +26,7 @@ export default function Home() {
             </Text>
             <Text fontSize={"sm"} color={"gray.600"} align={"center"}>
               To become a partner, click{" "}
-              <Link href={"/partners"}>
+              <Link href={"https://forms.gle/C6aZkZgQZXSdaKqk8"} isExternal>
                 <u>here</u>
               </Link>
             </Text>

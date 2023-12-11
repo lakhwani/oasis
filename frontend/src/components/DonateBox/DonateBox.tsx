@@ -23,6 +23,8 @@ import Link from "next/link";
 export default function DonateBox() {
   const [donationAmount, setDonationAmount] = useState("");
   const [isTermsAccepted, setIsTermsAccepted] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
   const { state } = useMetamask();
   const toast = useToast();
 
@@ -63,6 +65,8 @@ export default function DonateBox() {
 
     try {
       // Request the user's wallet to connect if it's not already available
+      setIsLoading(true); // Set loading to true when the transaction starts
+
       await window.ethereum.request({ method: "eth_requestAccounts" });
 
       // Create a new instance of the ethers.js provider to interact with the Ethereum network
@@ -87,7 +91,7 @@ export default function DonateBox() {
 
       // Call the makeDonation function from the contract
       const tx = await contract.makeDonation({
-        value: parseEther("0.00001"),
+        value: parseEther(donationAmount),
       });
 
       // Wait for the transaction to be confirmed
@@ -99,8 +103,10 @@ export default function DonateBox() {
         duration: 9000,
         isClosable: true,
       });
+      setIsLoading(false); // Set loading to false when the transaction completes
     } catch (error: any) {
       console.error(error);
+      setIsLoading(false); // Set loading to false if there is an error
       toast({
         title: "Donation Failed",
         description: error.message,
@@ -162,6 +168,7 @@ export default function DonateBox() {
                 color={"white"}
                 _hover={{ bg: "blue.500" }}
                 onClick={handleDonation}
+                isLoading={isLoading}
                 isDisabled={
                   !isTermsAccepted || !(parseFloat(donationAmount) > 0)
                 }

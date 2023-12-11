@@ -61,20 +61,36 @@ export default function FundTracker() {
           const donationEvents = await contract.queryFilter(
             contract.filters.DonationMade()
           );
-          const donationsWithDates = await Promise.all(
-            donationEvents.map(async (event: any) => {
-              const block = await provider.getBlock(event.blockNumber);
-              if (block) {
-                return {
-                  contributor: event.args.contributor,
-                  amount: formatEther(event.args.amount),
-                  date: new Date(block.timestamp * 1000).toLocaleDateString(),
-                };
-              }
-            })
+
+          const donationsWithDates = (
+            await Promise.all(
+              donationEvents.map(async (event: any) => {
+                const block = await provider.getBlock(event.blockNumber);
+                if (block) {
+                  return {
+                    contributor: event.args.contributor,
+                    amount: formatEther(event.args.amount),
+                    date: new Date(block.timestamp * 1000),
+                  };
+                }
+              })
+            )
+          ).filter(
+            (donation): donation is DonationEvent => donation !== undefined
           );
 
-          setRecentDonations(donationsWithDates);
+          // Sort the donations by date in descending order
+          donationsWithDates.sort(
+            (a, b) => b.date.getTime() - a.date.getTime()
+          );
+
+          // Convert dates to string for display
+          const sortedDonations = donationsWithDates.map((donation) => ({
+            ...donation,
+            date: donation.date.toLocaleDateString(),
+          }));
+
+          setRecentDonations(sortedDonations);
         } catch (error) {
           console.error("Failed to fetch pool or events:", error);
         }
@@ -104,7 +120,7 @@ export default function FundTracker() {
         <Progress
           colorScheme="blue"
           size="lg"
-          value={(totalFundsRaised) * 100}
+          value={totalFundsRaised * 100}
           mt={4}
         />
 

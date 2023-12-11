@@ -38,7 +38,7 @@ contract DisasterCrowdfunding is ChainlinkClient, Ownable {
         setChainlinkOracle(0x6090149792dAAeE9D1D568c9f9a6F6B46AA29eFD); // sepolia
         jobId = "7da2702f37fd48e5b1b9a5715e3509b6"; // GET > bytes
 
-        fee = (1 * LINK_DIVISIBILITY) / 10; // TODO ????
+        fee = (1 * LINK_DIVISIBILITY) / 10; 
     }
 
     function makeDonation() external payable {
@@ -52,8 +52,6 @@ contract DisasterCrowdfunding is ChainlinkClient, Ownable {
         verifiedWallets.push(verifiedWallet);
     }
 
-    // pass in the entire url because solidity does not support string concatenation: "https://api.predicthq.com/v1/events/?category=disasters&active.gte=2023-12-09T00:00:00&active.lte=2023-12-09T23:59:59"
-    // pass in "Bearer <ACCESS TOKEN>"
     function checkForPayout(string memory url, string memory accessToken) public {
         Chainlink.Request memory request = buildChainlinkRequest(jobId, address(this), this.fulfill.selector);
         request.add("get", url);
