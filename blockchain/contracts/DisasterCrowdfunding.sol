@@ -226,12 +226,22 @@ contract DisasterCrowdfunding is ERC20, ChainlinkClient, ReentrancyGuard {
 
         emit Vote(_proposalId, msg.sender, balanceOf(msg.sender), block.timestamp);
 
+    }
+
+    function executeProposal(uint256 _proposalId) public {
+        Proposal storage proposal = proposals[_proposalId];
+
         // if proposal is approved (more than 50% approval)
         if (proposal.approved >= totalSupply().divWadDown(2)) {
 
             // execute proposal
-            abi.encodeWithSignature(proposal.which, proposal.data);
-            proposal.executed = true;
+            bytes memory data = abi.encodeWithSignature(proposal.which, proposal.data);
+            (bool success, ) = address(this).call(data);
+            proposal.executed = success;
+            
+            if (success) {
+                emit ExecuteProposal(_proposalId, proposal.which, proposal.approved, block.timestamp);
+            }
             
         }
 
