@@ -4,7 +4,9 @@
 
 ## Overview
 
-Oasis Relief Fund is a compassionate and innovative platform dedicated to providing timely and targeted financial assistance for disaster relief efforts. This platform uniquely integrates Chainlink oracles with PredictHQ Natural disaster API to distribute funds to affected regions instantly based on verified real-world triggers, such as natural disasters.
+Oasis Relief Fund is a compassionate and innovative platform dedicated to providing timely and targeted financial assistance for disaster relief efforts. This platform uniquely integrates Chainlink oracles with PredictHQ Natural disaster API to distribute funds to affected regions instantly based on verified real-world triggers, such as natural disasters.  
+
+[▶️ See the pitch on DevPost](https://devpost.com/software/oasis-fund-relief)
 
 ## Description
 
